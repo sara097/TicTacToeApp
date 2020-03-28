@@ -1,13 +1,13 @@
-package com.pwr.zad1
+package com.example.tictactoeapp.gamePlay
 
-import com.example.tictactoeapp.gamePlay.ILLEGAL
-import com.example.tictactoeapp.gamePlay.Player
-import com.example.tictactoeapp.gamePlay.TicTacToeSymbol
+import android.view.View
+import android.widget.Button
 import com.example.tictactoeapp.gamePlay.TicTacToeSymbol.*
 
 open class TicTacToe {
 
     private lateinit var table: Array<Array<TicTacToeSymbol>> //Two dimensional table 3x3
+    var moveCounter: Int = 1
     open var gameOver: Boolean = false //define if game is over
 
     init { //initializes class
@@ -128,49 +128,46 @@ open class TicTacToe {
     //Puts symbol in desire location
     open fun makeMove(
         symbol: TicTacToeSymbol,
-        rowCoord: Int? = null,
-        columnCord: Int? = null,
-        layerCord: Int? = null
-    ): Boolean {
-        var movePerformed = false //Flag indicating whether the move was made.
-        if (rowCoord == null || columnCord == null) //If coordinates are null ask for coordinates.
-            ILLEGAL("Pick coordinates.")
-        else {
-            when {
-                symbol == EMPTY -> ILLEGAL("You did not make a move.") // checks if symbol is correct.
-                table[rowCoord][columnCord] == EMPTY -> { //if desired location is EMPTY
-                    table[rowCoord][columnCord] = symbol //puts symbol in this location
-                    movePerformed = true //sets move flag as true
-                }
-                else -> {
-                    ILLEGAL("You cannot pick this place.")
-                } //This means that desired place was not EMPTY
+        rowCoord: Int,
+        columnCord: Int
+    ): TicTacToeSymbol? {
+        var movePerformed: TicTacToeSymbol? = null //Flag indicating whether the move was made.
+
+        when {
+            symbol == EMPTY -> ILLEGAL("You did not make a move.") // checks if symbol is correct.
+            table[rowCoord][columnCord] == EMPTY -> { //if desired location is EMPTY
+                table[rowCoord][columnCord] = symbol //puts symbol in this location
+                movePerformed = symbol //sets move flag as true
             }
-            printTable() //prints table
-            checkScore(rowCoord, columnCord) //Checks if performed move ended game
-            println("*******")
         }
+        printTable() //prints table
+        if (movePerformed != null) moveCounter++
+        println("******* $moveCounter")
         return movePerformed
     }
 
     //Checks if game has ended
-    open fun checkScore(rowCoord: Int, columnCord: Int, layerCord: Int? = null) {
+    open fun checkScore(rowCoord: Int, columnCord: Int, btn: Button? = null): String {
         val possibilities = listOf( //list with possible places of win situations
             table.map { it[columnCord] }, //column with last put symbol
             table[rowCoord].toList(), //row with last put symbol
             listOf(table[0][0], table[1][1], table[2][2]), //diagonal 1
             listOf(table[0][2], table[1][1], table[2][0]) //diagonal 2
         )
+        var text = ""
         for (t in values().filter { it != EMPTY }) //checking for X and O
             if (possibilities.map { it.count { elem -> elem == t } }.contains(3)) { //if any of possible places contains 3 of given symbol
-                println("$t won!")
+                text = "$t won!"
                 gameOver = true //End game
                 break
             } else
                 if (!table.flatMap { it.asList() }.contains(EMPTY)) { //If there is no EMPTY in table
-                    println("Tie.")
+                    text = "Tie."
                     gameOver = true //end game
                     break
                 }
+        if (btn != null)
+            if (gameOver) btn.visibility = View.VISIBLE
+        return text
     }
 }

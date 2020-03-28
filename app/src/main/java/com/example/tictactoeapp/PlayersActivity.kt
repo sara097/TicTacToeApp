@@ -18,8 +18,8 @@ class PlayersActivity : AppCompatActivity() {
         start.setOnClickListener {
             val intent = Intent(this, GamePlayActivity::class.java).apply {
                 putExtra("mode", 0)
-                putExtra("p1", p1.text)
-                putExtra("p2", p2.text)
+                putExtra("p1", p1.text.toString())
+                putExtra("p2", p2.text.toString())
             }
             startActivity(intent)
         }

@@ -1,9 +1,8 @@
 package com.example.tictactoeapp
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.AlarmClock.EXTRA_MESSAGE
+import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 
 class MainActivity : AppCompatActivity() {

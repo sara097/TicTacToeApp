@@ -19,6 +19,7 @@
         <activity android:name=".PlayersActivity"/>
         <activity android:name=".ModeActivity"/>
         <activity android:name=".GamePlayActivity"/>
+        <activity android:name=".GamePlayActivity"/>
     </application>
 
 </manifest>

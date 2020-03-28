@@ -1,75 +1,86 @@
 package com.example.tictactoeapp.gamePlay
 
-import com.pwr.zad1.TicTacToe
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
+import com.example.tictactoeapp.R
+import com.example.tictactoeapp.gamePlay.TicTacToe.ComputerPlayer
 
 class GamePlayWithComputer(
-    override val ttt: TicTacToe
+    override var ttt: TicTacToe,
+    private val buttons: Array<Array<ImageButton>>
 ) : GamePlay() {
 
+    private fun getDrawable(symbol: TicTacToeSymbol?): Int {
+        return when (symbol) {
+            TicTacToeSymbol.X -> R.drawable.x
+            TicTacToeSymbol.O -> R.drawable.o
+            else -> R.drawable.empty
+        }
+    }
+
     //Method, that allows to play game until someone win or there is no EMPTY in table
-    override fun playGame() {
-        val players = startGame() //Getting users
-        var moveCounter = 1
-        while (!ttt.gameOver) { //if there is EMPTY and no one win
-            val activePlayer = if (moveCounter % 2 == 1) players.first else players.second //take active player
-            if (activePlayer is SimplePlayer) //if active player is user
-                userPlayerActivity(activePlayer) //as for coordinates
-            else if (activePlayer is TicTacToe.ComputerPlayer) { //if active player is computer
-                val moveCords = activePlayer.makeMove() //calculate coords
-                ttt.makeMove(activePlayer.symbol, moveCords.first, moveCords.second) //put it into table
+    override fun playGame(
+        map: Map<String, String>,
+        label: TextView,
+        cords: Pair<Int, Int>,
+        btn: Button
+    ): TicTacToeSymbol? {
+        if (!ttt.gameOver) {
+            val players = startGame(map) //Getting users
+            val activePlayer = if (ttt.moveCounter % 2 == 1) players.first else players.second //take active player
+            val otherPlayer = if (ttt.moveCounter % 2 == 0) players.first else players.second //take active player
+            label.text = "Your move ${otherPlayer.name}"
+            if (activePlayer is SimplePlayer) {
+                //if active player is user
+                val u = userPlayerActivity(activePlayer, cords.first, cords.second) //as for coordinates
+                val t = ttt.checkScore(cords.first, cords.second, btn) //Checks if performed move ended game
+                if (t != "") label.text = t
+                if (!ttt.gameOver) {
+                    val moveCords = (otherPlayer as ComputerPlayer).makeMove()  //calculate coords
+                    buttons[moveCords.first][moveCords.second].setImageResource(getDrawable(otherPlayer.symbol))
+                    buttons[moveCords.first][moveCords.second].isEnabled = false
+                    ttt.makeMove(otherPlayer.symbol, moveCords.first, moveCords.second) //put it into table
+                    val t2 =
+                        ttt.checkScore(moveCords.first, moveCords.second, btn) //Checks if performed move ended game
+                    if (t2 != "") label.text = t2
+                }
+
+                return u
             }
-            moveCounter++
         }
+        return null
     }
 
-    //Define who starts.
-    private fun whoStarts(): String {
-        println("Which one player do you want to be? Player 1 (X) - type 1, Player 2 (O) - type 2. Player 1 begins game.")
-        var mode = readLine()
-        while (mode != "2" && mode != "1") {
-            println("Give correct number. \n Which one player do you want to be? Player 1 (X) - type 1, Player 2 (O) - type 2. Player 1 begins game.")
-            mode = readLine()
-        }
-        return mode
-    }
 
-    //Define difficulty level of game.
-    private fun difficultyLevel(): Int {
-        println("Choose level: 1 - easy, 2 - medium, 3 - hard.")
-        var level = readLine()
-        while (level != "3" && level != "2" && level != "1") {
-            println("Give correct number. \n Choose level: 1 - easy, 2 - medium, 3 - hard.")
-            level = readLine()
+    //Specify which one player is computer, who starts and what is difficulty level
+    override fun startGame(map: Map<String, String>): Pair<Player, Player> {
+        val p = map["p"] ?: "Player"
+        val symbol = when (map["symbol"]) {
+            "O" -> TicTacToeSymbol.O
+            else -> TicTacToeSymbol.X
         }
-        return when (level) {
+        val level = when (map["difMode"]) {
             "1" -> 1
             "2" -> 2
             else -> 3
         }
+        return when (symbol) {
+            TicTacToeSymbol.O -> ttt.ComputerPlayer(TicTacToeSymbol.X, level) to SimplePlayer(p, TicTacToeSymbol.O)
+            else -> SimplePlayer(p, TicTacToeSymbol.X) to ttt.ComputerPlayer(TicTacToeSymbol.O, level)
+        }
     }
 
-    //Specify which one player is computer, who starts and what is difficulty level
-    override fun startGame(): Pair<Player, Player> {
-        val mode = whoStarts() //Define who starts.
-        val level = difficultyLevel() //Define difficulty level of game.
-        //Asks user for name.
-        val p1: Player
-        val p2: Player
-        when (mode) {
-            "1" -> {
-                println("You have chosen Player 1 (X), pick your name!")
-                p1 = SimplePlayer(readLine() ?: "player1", TicTacToeSymbol.X)
-                p2 = ttt.ComputerPlayer(TicTacToeSymbol.O, level)
-            }
-            else -> {
-                println("You have chosen Player 2 (O), pick your name!")
-                p1 = ttt.ComputerPlayer(TicTacToeSymbol.X, level)
-                p2 = SimplePlayer(readLine() ?: "player2", TicTacToeSymbol.O)
-            }
+    fun firstMove(map: Map<String, String>) {
+        val players = startGame(map)
+        val cp = players.first
+        if (cp is ComputerPlayer) {
+            val moveCords = cp.makeMove()  //calculate coords
+            buttons[moveCords.first][moveCords.second].setImageResource(getDrawable(cp.symbol))
+            buttons[moveCords.first][moveCords.second].isEnabled = false
+            ttt.makeMove(cp.symbol, moveCords.first, moveCords.second) //put it into table
+            ttt.checkScore(moveCords.first, moveCords.second) //Checks if performed move ended game
         }
-        println("Player 1 - ${p1.name} plays with ${p1.symbol.symbol}, Player 2 - ${p2.name} plays with ${p2.symbol.symbol}")
-        println("Game begins! Player1 ${p1.name} starts. Choose cord in format: row cord; column cord")
-        return p1 to p2 //returns pair of users
     }
 
 
