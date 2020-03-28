@@ -1,5 +1,6 @@
 package com.example.tictactoeapp.gamePlay
 
+import android.annotation.SuppressLint
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -20,6 +21,7 @@ class GamePlayWithComputer(
     }
 
     //Method, that allows to play game until someone win or there is no EMPTY in table
+    @SuppressLint("SetTextI18n")
     override fun playGame(
         map: Map<String, String>,
         label: TextView,
@@ -28,26 +30,25 @@ class GamePlayWithComputer(
     ): TicTacToeSymbol? {
         if (!ttt.gameOver) {
             val players = startGame(map) //Getting users
-            val activePlayer = if (ttt.moveCounter % 2 == 1) players.first else players.second //take active player
-            val otherPlayer = if (ttt.moveCounter % 2 == 0) players.first else players.second //take active player
-            label.text = "Your move ${otherPlayer.name}"
-            if (activePlayer is SimplePlayer) {
-                //if active player is user
-                val u = userPlayerActivity(activePlayer, cords.first, cords.second) //as for coordinates
-                val t = ttt.checkScore(cords.first, cords.second, btn) //Checks if performed move ended game
-                if (t != "") label.text = t
-                if (!ttt.gameOver) {
-                    val moveCords = (otherPlayer as ComputerPlayer).makeMove()  //calculate coords
-                    buttons[moveCords.first][moveCords.second].setImageResource(getDrawable(otherPlayer.symbol))
-                    buttons[moveCords.first][moveCords.second].isEnabled = false
-                    ttt.makeMove(otherPlayer.symbol, moveCords.first, moveCords.second) //put it into table
-                    val t2 =
-                        ttt.checkScore(moveCords.first, moveCords.second, btn) //Checks if performed move ended game
-                    if (t2 != "") label.text = t2
-                }
+            val activePlayer = if (players.first is SimplePlayer) players.first else players.second
+            val otherPlayer = if (players.first is ComputerPlayer) players.first else players.second
+            label.text = "Your move ${activePlayer.name}"
 
-                return u
+            //if active player is user
+            val u = userPlayerActivity(activePlayer, cords.first, cords.second) //as for coordinates
+            val t = ttt.checkScore(cords.first, cords.second, btn) //Checks if performed move ended game
+            if (t != "") label.text = t
+            if (!ttt.gameOver) {
+                val moveCords = (otherPlayer as ComputerPlayer).makeMove()  //calculate coords
+                buttons[moveCords.first][moveCords.second].setImageResource(getDrawable(otherPlayer.symbol))
+                buttons[moveCords.first][moveCords.second].isEnabled = false
+                ttt.makeMove(otherPlayer.symbol, moveCords.first, moveCords.second) //put it into table
+
+                val t2 = ttt.checkScore(moveCords.first, moveCords.second, btn) //Checks if performed move ended game
+                if (t2 != "") label.text = t2
             }
+            return u
+
         }
         return null
     }

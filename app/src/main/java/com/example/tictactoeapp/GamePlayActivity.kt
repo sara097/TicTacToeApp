@@ -1,5 +1,6 @@
 package com.example.tictactoeapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -29,21 +30,22 @@ class GamePlayActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game_play)
         extras = getExtraFromIntent(mode)
         val label = findViewById<TextView>(R.id.playerLabel)
-        label.text = "Your move ${if (mode == 0) extras["p1"] else extras["p"]}"
-
         val againButton = findViewById<Button>(R.id.playAgain)
-        getCords(againButton)
-        againButton.visibility = View.INVISIBLE
-
+        initGame(label, againButton)
         againButton.setOnClickListener {
-            againButton.visibility = View.INVISIBLE
-            label.text = "Your move ${if (mode == 0) extras["p1"] else extras["p"]}"
             gamePlay.ttt = TicTacToe()
             initButtons()
-            getCords(againButton)
-            if (gamePlay is GamePlayWithComputer) (gamePlay as GamePlayWithComputer).firstMove(extras)
+            initGame(label, againButton)
         }
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initGame(label: TextView, btn: Button) {
+        btn.visibility = View.INVISIBLE
+        label.text = "Your move ${if (mode == 0) extras["p1"] else extras["p"]}"
         if (gamePlay is GamePlayWithComputer) (gamePlay as GamePlayWithComputer).firstMove(extras)
+        getCords(btn)
     }
 
 
@@ -56,7 +58,7 @@ class GamePlayActivity : AppCompatActivity() {
         ids2.forEachIndexed { idx, id -> setListener(id, 2 to idx, btn) }
     }
 
-    fun initButtons() {
+    private fun initButtons() {
         getButtons().flatten().forEach {
             it.isEnabled = true
             it.setImageResource(R.drawable.empty)

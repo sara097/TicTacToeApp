@@ -1,5 +1,6 @@
 package com.example.tictactoeapp.gamePlay
 
+import android.annotation.SuppressLint
 import android.widget.Button
 import android.widget.TextView
 
@@ -8,6 +9,7 @@ open class GamePlay2Players(
 ) : GamePlay() {
 
     //Method, that allows to play game until someone win or there is no EMPTY in table
+    @SuppressLint("SetTextI18n")
     override fun playGame(
         map: Map<String, String>,
         label: TextView,

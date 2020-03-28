@@ -16,11 +16,11 @@ class ModeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mode)
         val start = findViewById<Button>(R.id.startGame)
         val p1 = findViewById<EditText>(R.id.playerName)
-
         start.setOnClickListener {
+            val name = p1.text.toString()
             val intent = Intent(this, GamePlayActivity::class.java).apply {
                 putExtra("mode", 1)
-                putExtra("p1", p1.text.toString())
+                putExtra("p1", if (name == "") "Player" else name)
                 putExtra("symbol", getSelectedRadioButtonTxt(R.id.symbolRadio))
                 putExtra("difMode", getSelectedRadioButtonTxt(R.id.diffRadio))
             }

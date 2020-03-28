@@ -4,11 +4,11 @@ import android.view.View
 import android.widget.Button
 import com.example.tictactoeapp.gamePlay.TicTacToeSymbol.*
 
-open class TicTacToe {
+class TicTacToe {
 
     private lateinit var table: Array<Array<TicTacToeSymbol>> //Two dimensional table 3x3
     var moveCounter: Int = 1
-    open var gameOver: Boolean = false //define if game is over
+    var gameOver: Boolean = false //define if game is over
 
     init { //initializes class
         fillTableWithEmpty() //fills whole table with EMPTY symbol
@@ -104,7 +104,7 @@ open class TicTacToe {
     }
 
     //initializes table with EMPTY symbol.
-    open fun fillTableWithEmpty() {
+    private fun fillTableWithEmpty() {
         table = arrayOf()
         for (i in 0..2) {
             var array = arrayOf<TicTacToeSymbol>()
@@ -115,7 +115,7 @@ open class TicTacToe {
     }
 
     //Prints table.
-    open fun printTable() {
+    private fun printTable() {
         listOf("   ", " 1 ", " 2 ", " 3 ").forEach { print(it) }
         println()
         table.forEach { row ->
@@ -126,7 +126,7 @@ open class TicTacToe {
     }
 
     //Puts symbol in desire location
-    open fun makeMove(
+    fun makeMove(
         symbol: TicTacToeSymbol,
         rowCoord: Int,
         columnCord: Int
@@ -134,7 +134,7 @@ open class TicTacToe {
         var movePerformed: TicTacToeSymbol? = null //Flag indicating whether the move was made.
 
         when {
-            symbol == EMPTY -> ILLEGAL("You did not make a move.") // checks if symbol is correct.
+            symbol == EMPTY -> println("??")
             table[rowCoord][columnCord] == EMPTY -> { //if desired location is EMPTY
                 table[rowCoord][columnCord] = symbol //puts symbol in this location
                 movePerformed = symbol //sets move flag as true
@@ -142,12 +142,12 @@ open class TicTacToe {
         }
         printTable() //prints table
         if (movePerformed != null) moveCounter++
-        println("******* $moveCounter")
+        println("*******")
         return movePerformed
     }
 
     //Checks if game has ended
-    open fun checkScore(rowCoord: Int, columnCord: Int, btn: Button? = null): String {
+    fun checkScore(rowCoord: Int, columnCord: Int, btn: Button? = null): String {
         val possibilities = listOf( //list with possible places of win situations
             table.map { it[columnCord] }, //column with last put symbol
             table[rowCoord].toList(), //row with last put symbol
@@ -166,8 +166,7 @@ open class TicTacToe {
                     gameOver = true //end game
                     break
                 }
-        if (btn != null)
-            if (gameOver) btn.visibility = View.VISIBLE
+        if (btn != null) if (gameOver) btn.visibility = View.VISIBLE
         return text
     }
 }

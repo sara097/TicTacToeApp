@@ -3,7 +3,7 @@ package com.example.tictactoeapp.gamePlay
 import android.widget.Button
 import android.widget.TextView
 
-abstract class GamePlay { //Abstract class from TicTacToe game
+abstract class GamePlay { //Abstract class for TicTacToe game
 
     abstract var ttt: TicTacToe //Class with game methods
 
