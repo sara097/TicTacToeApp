@@ -7,7 +7,7 @@ import com.example.tictactoeapp.gamePlay.TicTacToeSymbol.*
 class TicTacToe {
 
     private lateinit var table: Array<Array<TicTacToeSymbol>> //Two dimensional table 3x3
-    var moveCounter: Int = 1
+    var moveCounter: Int = 1 //Move counter for two players mode.
     var gameOver: Boolean = false //define if game is over
 
     init { //initializes class
@@ -147,6 +147,7 @@ class TicTacToe {
     }
 
     //Checks if game has ended
+    //Return information about game end to display in TextView.
     fun checkScore(rowCoord: Int, columnCord: Int, btn: Button? = null): String {
         val possibilities = listOf( //list with possible places of win situations
             table.map { it[columnCord] }, //column with last put symbol
@@ -166,7 +167,7 @@ class TicTacToe {
                     gameOver = true //end game
                     break
                 }
-        if (btn != null) if (gameOver) btn.visibility = View.VISIBLE
+        if (btn != null) if (gameOver) btn.visibility = View.VISIBLE //Showing button if game has ended.
         return text
     }
 }

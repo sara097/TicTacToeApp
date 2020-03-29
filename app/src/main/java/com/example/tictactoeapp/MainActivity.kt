@@ -12,11 +12,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val players = findViewById<Button>(R.id.players)
         players.setOnClickListener {
+            //Two players mode button
             val intent = Intent(this, PlayersActivity::class.java)
             startActivity(intent)
         }
         val computer = findViewById<Button>(R.id.computer)
         computer.setOnClickListener {
+            //Computer mode button
             val intent = Intent(this, ModeActivity::class.java)
             startActivity(intent)
         }

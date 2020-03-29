@@ -11,11 +11,14 @@ import android.widget.RadioGroup
 
 class ModeActivity : AppCompatActivity() {
 
+    //Computer mode activity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mode)
         val start = findViewById<Button>(R.id.startGame)
-        val p1 = findViewById<EditText>(R.id.playerName)
+        val p1 = findViewById<EditText>(R.id.playerName) //Player name
+        //Start button. Gets information about who starts, name of player and difficulty level
         start.setOnClickListener {
             val name = p1.text.toString()
             val intent = Intent(this, GamePlayActivity::class.java).apply {
@@ -28,6 +31,7 @@ class ModeActivity : AppCompatActivity() {
         }
     }
 
+    //Gets text from radio buttons group
     private fun getSelectedRadioButtonTxt(id: Int): CharSequence? {
         val group = findViewById<RadioGroup>(id)
         val selected = findViewById<RadioButton>(group.checkedRadioButtonId)

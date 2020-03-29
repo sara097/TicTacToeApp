@@ -38,6 +38,7 @@ class GamePlayWithComputer(
             val u = userPlayerActivity(activePlayer, cords.first, cords.second) //as for coordinates
             val t = ttt.checkScore(cords.first, cords.second, btn) //Checks if performed move ended game
             if (t != "") label.text = t
+            //Computer move. If game is not over, computer makes move.
             if (!ttt.gameOver) {
                 val moveCords = (otherPlayer as ComputerPlayer).makeMove()  //calculate coords
                 buttons[moveCords.first][moveCords.second].setImageResource(getDrawable(otherPlayer.symbol))
@@ -72,6 +73,7 @@ class GamePlayWithComputer(
         }
     }
 
+    //If computer starts - first move.
     fun firstMove(map: Map<String, String>) {
         val players = startGame(map)
         val cp = players.first

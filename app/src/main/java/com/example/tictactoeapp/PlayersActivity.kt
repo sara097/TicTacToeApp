@@ -8,14 +8,17 @@ import android.widget.EditText
 
 class PlayersActivity : AppCompatActivity() {
 
+    //Pleyrs mode activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_players)
 
         val start = findViewById<Button>(R.id.startGame)
+        //Players name
         val p1 = findViewById<EditText>(R.id.player1Name)
         val p2 = findViewById<EditText>(R.id.player2Name)
-
+        //Start button
+        //Gets players name
         start.setOnClickListener {
             val name1 = p1.text.toString()
             val name2 = p2.text.toString()

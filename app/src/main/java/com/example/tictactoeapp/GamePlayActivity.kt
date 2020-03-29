@@ -15,10 +15,14 @@ import com.example.tictactoeapp.gamePlay.TicTacToeSymbol.O
 import com.example.tictactoeapp.gamePlay.TicTacToeSymbol.X
 
 class GamePlayActivity : AppCompatActivity() {
+    //Game play activity
+    //Every place where can user touch to make move is a ImageButton.
+    //There is 9 ImageButtons. When button is clicked the drawable image is changed to active symbol.
 
-    private lateinit var extras: Map<String, String>
-    private val mode by lazy { intent.getIntExtra("mode", 0) }
+    private lateinit var extras: Map<String, String> //Extras from previous activity
+    private val mode by lazy { intent.getIntExtra("mode", 0) } //Mode (2 players or computers)
     private val gamePlay by lazy {
+        //GamePlay class, by lazy (created when first tame called)
         when (mode) {
             1 -> GamePlayWithComputer(TicTacToe(), getButtons())
             else -> GamePlay2Players(TicTacToe())
@@ -33,6 +37,7 @@ class GamePlayActivity : AppCompatActivity() {
         val againButton = findViewById<Button>(R.id.playAgain)
         initGame(label, againButton)
         againButton.setOnClickListener {
+            //If play again clicked.
             gamePlay.ttt = TicTacToe()
             initButtons()
             initGame(label, againButton)
@@ -40,15 +45,17 @@ class GamePlayActivity : AppCompatActivity() {
 
     }
 
+    //Initializing game
     @SuppressLint("SetTextI18n")
     private fun initGame(label: TextView, btn: Button) {
         btn.visibility = View.INVISIBLE
         label.text = "Your move ${if (mode == 0) extras["p1"] else extras["p"]}"
+        //If computer should make first move.
         if (gamePlay is GamePlayWithComputer) (gamePlay as GamePlayWithComputer).firstMove(extras)
         getCords(btn)
     }
 
-
+    //Buttons behaviour
     private fun getCords(btn: Button) {
         val ids0 = listOf(R.id.p_0_0, R.id.p_0_1, R.id.p_0_2)
         val ids1 = listOf(R.id.p_1_0, R.id.p_1_1, R.id.p_1_2)
@@ -58,6 +65,7 @@ class GamePlayActivity : AppCompatActivity() {
         ids2.forEachIndexed { idx, id -> setListener(id, 2 to idx, btn) }
     }
 
+    //Initialize buttons when play again.
     private fun initButtons() {
         getButtons().flatten().forEach {
             it.isEnabled = true
@@ -65,6 +73,7 @@ class GamePlayActivity : AppCompatActivity() {
         }
     }
 
+    //When button clicked
     private fun setListener(id: Int, cords: Pair<Int, Int>, btn: Button) {
         findViewById<ImageButton>(id).setOnClickListener {
             val s = gamePlay.playGame(extras, findViewById(R.id.playerLabel), cords, btn)
@@ -73,6 +82,7 @@ class GamePlayActivity : AppCompatActivity() {
         }
     }
 
+    //Get image to set on clicked button
     private fun getDrawable(symbol: TicTacToeSymbol?): Int {
         return when (symbol) {
             X -> R.drawable.x
@@ -81,15 +91,17 @@ class GamePlayActivity : AppCompatActivity() {
         }
     }
 
+    //Getting view by id
     private fun getView(id: Int): ImageButton = findViewById(id)
 
+    //Returns two dimensional array of buttons.
     private fun getButtons(): Array<Array<ImageButton>> = arrayOf(
         arrayOf(getView(R.id.p_0_0), getView(R.id.p_0_1), getView(R.id.p_0_2)),
         arrayOf(getView(R.id.p_1_0), getView(R.id.p_1_1), getView(R.id.p_1_2)),
         arrayOf(getView(R.id.p_2_0), getView(R.id.p_2_1), getView(R.id.p_2_2))
     )
 
-
+    //Getting data from previous activity
     private fun getExtraFromIntent(mode: Int): Map<String, String> {
         return when (mode) {
             1 -> mapOf(

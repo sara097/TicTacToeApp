@@ -27,7 +27,6 @@ open class GamePlay2Players(
             return u
         }
         return null
-
     }
 
     //Method that gain user names and symbols.
